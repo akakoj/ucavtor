@@ -3,7 +3,7 @@
  */
 
 import * as React from 'react';
-import styled from 'styled-components';
+
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { compose, withState } from 'recompose';
@@ -16,9 +16,10 @@ import { handleMenuSelectItem } from '../actions/menuActions';
 
 /*!
  * Components
- */ 
+ */
 
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+
 const { Header, Content, Footer, Sider } = Layout;
 
 declare const require: any;
@@ -61,7 +62,7 @@ const Dashboard = ({ menu, collapsed, handleCollapse, handleMenuSelectItem, chil
               {title}
             </Link>
           </Menu.Item>
-        ))} 
+        ))}
       </Menu>
     </Sider>
     <Layout>

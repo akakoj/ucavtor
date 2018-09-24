@@ -1,3 +1,5 @@
+import { AxiosPromise } from "axios";
+
 /**
  * Reducens
  */
@@ -97,6 +99,9 @@ interface IPayment {
   state: string;
 }
 
+/**
+ * User
+ */
 interface IUser {
   fio: string;
   telephone: string;
@@ -110,6 +115,21 @@ interface IUser {
   position: string;
   level: number;
 }
+
+interface IUserProps extends IUser {
+  match: {
+    params: {
+      id: string;
+    }
+  };
+  form: {
+    getFieldDecorator: (name: string, settings: object) => void;
+  };
+  fetchCourses: () => void;
+  updateUser: (data: IUser) => AxiosPromise;
+}
+
+interface IUserState extends IUser {}
 
 /*!
  * Containers

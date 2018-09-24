@@ -20,7 +20,6 @@ import { fetchCourses } from '../../actions/coursesActions';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
-const { TextArea } = Input;
 
 /*!
  * InitialState
@@ -30,7 +29,7 @@ const initialState = {
   fio: '',
   telephone: '',
   password: '',
-  organization: 0,
+  organization: '',
   courses: [],
   finishedCourses: [],
   payments: [],
@@ -44,7 +43,7 @@ const initialState = {
  * Expo
  */
 
-class UserEditForm extends React.Component<any, IUser> {
+class UserEditForm extends React.Component<IUserProps, IUserState> {
   state = initialState;
 
   public componentDidMount() {
@@ -56,10 +55,6 @@ class UserEditForm extends React.Component<any, IUser> {
     return this.setState({ ...filteredUser[0] });
   }
 
-  private handleChangeCourses = () => {};
-
-  private handleChangeLevel = () => {};
-
   private handleSubmit = (e) => {
     e.preventDefault();
 
@@ -68,7 +63,7 @@ class UserEditForm extends React.Component<any, IUser> {
         const data = { ...this.state, ...values };
         delete data.organization;
         delete data.payments;
-        
+
         this.props.updateUser(data).then(() => success());
       }
     });
@@ -76,18 +71,12 @@ class UserEditForm extends React.Component<any, IUser> {
 
   public render() {
     const { form: { getFieldDecorator } } = this.props;
+
     const {
       fio,
-      telephone,
-      password,
       organization,
       courses,
-      finishedCourses,
-      payments,
-      tests,
       email,
-      position,
-      level,
     } = this.state;
 
     return (
