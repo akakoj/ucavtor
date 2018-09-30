@@ -10,10 +10,10 @@ import { Row, Col } from 'antd';
  * Expo
  */
 
-const Course = ({ icon, name, content, slug }) => (
+const Course = ({ icon, name, content, slug } : ICourse) => (
   <Col span={12}>
     <article className="course">
-      <Link as={`/courses/${slug}`}  href={`/courses?slug=${slug}`}>
+      <Link as={`/courses/${slug}`} href={`/courses?slug=${slug}`}>
         <a className="course__link">
           <Row>
             <Col span={6} className="left-column">

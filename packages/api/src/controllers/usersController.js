@@ -89,7 +89,10 @@ exports.update = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = await json(req);
-    const user = await User.findOne({ email }, { _id: 1, fio: 1, position: 1, email: 1, password: 1 });
+    const user = await User.findOne(
+      { email },
+      { _id: 1, fio: 1, position: 1, email: 1, password: 1 }
+    );
 
     if (compareSync(password, user.password)) {
       const token = sign(user.toObject(), '123');
@@ -118,7 +121,7 @@ exports.delete = async (req, res) => {
     const { id } = await json(req);
 
     await User.findByIdAndRemove(id);
-    
+
     return send(res, 200);
   } catch(e) {
     return send(res, 500, e);

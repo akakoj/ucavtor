@@ -29,7 +29,9 @@ const OrderButton = styled(Button)`
  * Expo
  */
 
-const Course = ({ course: { title, description, name, content, thumb, duration, price }, settings }) => (
+const Course = ({
+  course: { title, description, name, content, thumb, duration, price }, settings,
+}) => (
   <Site title={title} description={description} settings={settings}>
     <section className="uc-container">
       <div className="article">

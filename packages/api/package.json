@@ -1,10 +1,11 @@
 {
-  "name": "ucavtor-api",
+  "name": "@ucavtor/api",
   "version": "0.0.0",
   "license": "MIT",
   "scripts": {
     "start": "node src",
-    "start-dev-api": "micro-dev -p 8081 src/app.js"
+    "start-dev-api": "micro-dev -p 8081 src/app.js",
+    "build": "webpack --mode production"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

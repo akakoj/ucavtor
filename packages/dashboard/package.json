@@ -6,26 +6,6 @@
     "start-dev-dashboard": "API_URL=http://localhost:8081 parcel -p 2200 ./src/index.html",
     "build": "API_URL=http://api.ucavtor.ru parcel build ./src/index.html --public-url ./"
   },
-  "devDependencies": {
-    "@types/react": "^16.0.41",
-    "@types/react-dom": "^16.0.4",
-    "@types/react-helmet": "^5.0.4",
-    "@types/react-redux": "^5.0.15",
-    "@types/react-router-dom": "^4.2.4",
-    "@types/react-router-redux": "^5.0.12",
-    "@types/recompose": "^0.24.7",
-    "babel-plugin-import": "^1.7.0",
-    "babel-plugin-styled-components": "^1.5.1",
-    "cssnano": "^3.10.0",
-    "parcel-bundler": "^1.8.1",
-    "parcel-plugin-typescript": "^0.7.1",
-    "postcss-cssnext": "^3.1.0",
-    "postcss-import": "^11.1.0",
-    "postcss-modules": "^1.1.0",
-    "tslint": "^5.10.0",
-    "tslint-config-airbnb": "^5.9.2",
-    "typescript": "^2.8.3"
-  },
   "dependencies": {
     "antd": "^3.9.3",
     "axios": "^0.18.0",

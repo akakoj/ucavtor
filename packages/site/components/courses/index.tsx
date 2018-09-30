@@ -17,7 +17,7 @@ const { CheckableTag } = Tag;
  * Expos
  */
 
-class Courses extends React.Component {
+class Courses extends React.Component<ICourseProps, ICourseState> {
   state = {
     selectedTags: [],
   };
@@ -69,7 +69,9 @@ class Courses extends React.Component {
           </header>
 
           <Row>
-            {currentItems.map((item, index) => <Item key={index} {...item} />)}
+            {currentItems.map(
+              (item, index) => <Item key={index} {...item} />,
+            )}
           </Row>
         </div>
       </section>
