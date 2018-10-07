@@ -1,13 +1,12 @@
 {
-  "name": "ucavtor-admin",
+  "name": "admin",
   "version": "0.0.0",
-  "license": "MIT",
   "scripts": {
     "start-dev-admin": "API_URL=http://localhost:8081 parcel -p 2000 ./src/index.html",
     "build": "API_URL=http://api.ucavtor.ru parcel build ./src/index.html --public-url ./"
   },
   "dependencies": {
-    "antd": "^3.9.3",
+    "antd": "^3.10.0",
     "axios": "^0.18.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
