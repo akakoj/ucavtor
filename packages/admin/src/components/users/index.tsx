@@ -4,6 +4,7 @@
 
 import * as React from 'react';
 import moment from 'moment';
+
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
@@ -29,24 +30,24 @@ const columns = [
     dataIndex: 'organization',
     key: 'organization',
     align: 'center',
-    render: (text, record) => 'частное лицо',
+    render: () => 'частное лицо',
   }, {
     title: 'Зарегистрирован',
     dataIndex: 'createdAt',
     key: 'createdAt',
     align: 'center',
-    render: (text, record) => moment(text).locale('ru').format('L'),
+    render: (text: string) => moment(text).locale('ru').format('L'),
   }, {
     title: 'Оплачен',
     dataIndex: 'status',
     key: 'status',
     align: 'center',
-    render: text => <Switch />,
+    render: () => <Switch />,
   }, {
     title: 'Действия',
     key: 'action',
     align: 'center',
-    render: (text, record) => (
+    render: (_: void, record: { _id: string }) => (
       <div>
         <Link to={`/users/edit/${record._id}`}>
           <Button type="primary" icon="edit" style={{ marginLeft: 10 }} />
@@ -63,7 +64,7 @@ const columns = [
  */
 
 const Index = ({ loading, data }) => (
-  <Table 
+  <Table
     columns={columns}
     rowKey={(record: any) => record._id}
     dataSource={data}

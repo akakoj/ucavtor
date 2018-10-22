@@ -3,12 +3,17 @@
  */
 
 import * as React from 'react';
+import thunk from 'redux-thunk';
+
 import { render } from 'react-dom';
-import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
+
+/*!
+ * Reducers
+ */
 
 import rootReducer from './reducers';
 

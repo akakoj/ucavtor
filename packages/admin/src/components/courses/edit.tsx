@@ -4,8 +4,9 @@
 
 import * as React from 'react';
 import CKEditor from 'react-ckeditor-component';
+
 import { connect } from 'react-redux';
-import { Form, Icon, Input, Button, Checkbox, Select, Tabs } from 'antd';
+import { Form, Input, Button, Select, Tabs } from 'antd';
 
 /*!
  * Actions

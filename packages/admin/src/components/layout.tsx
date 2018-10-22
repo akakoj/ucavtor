@@ -19,6 +19,7 @@ import { handleMenuSelectItem } from '../actions/menuActions';
  */
 
 import { Layout, Menu, Breadcrumb, Icon } from 'antd';
+import { IDashboardProps, IMenu } from '../interfaces';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -28,15 +29,13 @@ declare const require: any;
  * Styles
  */
 
-import styles from './style.css';
-
-console.info(styles);
+const styles = require('./style.css');
 
 /*!
  * Expo
  */
 
-const Dashboard = ({ menu, collapsed, handleCollapse, handleMenuSelectItem, children }) => (
+const Dashboard = ({ menu, collapsed, handleCollapse, handleMenuSelectItem, children }: IDashboardProps) => (
   <Layout style={{ minHeight: '100vh' }}>
     <Sider
       collapsible={true}
@@ -82,7 +81,7 @@ const Dashboard = ({ menu, collapsed, handleCollapse, handleMenuSelectItem, chil
   </Layout>
 );
 
-const mapDispatchToProps = ({ menu }) => ({ menu });
+const mapDispatchToProps = ({ menu }: { menu: IMenu }) => ({ menu });
 
 export default compose(
   connect(mapDispatchToProps, { handleMenuSelectItem }),

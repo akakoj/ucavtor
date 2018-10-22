@@ -1,4 +1,10 @@
 /**
+ * Dependencies
+ */
+
+const { resolve } = require('path');
+
+/**
  * Plugins
  */
 
@@ -18,6 +24,7 @@ const devMode = process.env.NODE_ENV !== 'production';
  */
 
 module.exports = {
+  devtool: 'source-map',
   output: {
     path: __dirname + '/dist',
     publicPath: '/',
@@ -54,14 +61,39 @@ module.exports = {
         ]
       },
 
+      // With Css modules
       {
         test: /\.css$/,
+        include: [resolve(__dirname, 'src')],
         use: [
           devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
           {
             loader: 'css-loader',
             options: {
               modules: true,
+              importLoaders: 1
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              config: {
+                path: './postcss.config.js'
+              }
+            }
+          }
+        ]
+      },
+
+      // Without Css modules
+      {
+        test: /\.css$/,
+        exclude: [resolve(__dirname, 'src')],
+        use: [
+          devMode ? 'style-loader' : MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
               importLoaders: 1
             }
           },

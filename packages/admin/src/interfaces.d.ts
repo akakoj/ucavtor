@@ -1,4 +1,5 @@
 import { AxiosPromise } from "axios";
+import { ReactChildren } from "react";
 
 /**
  * Reducens
@@ -169,4 +170,32 @@ interface ISettingsContainerProps {
 interface IUsersContainerState {}
 interface IUsersContainerProps {
   fetchUsers: () => void;
+}
+
+/**
+ * Menu
+ */
+interface IMenu {
+  data: IMenuItem[];
+  selected: string[];
+}
+
+interface IMenuItem {
+  _id: string;
+  title: string;
+  icon: string;
+  href: string;
+}
+
+
+/**
+ * Dashboard
+ */
+
+interface IDashboardProps {
+  menu: IMenu;
+  collapsed: boolean;
+  handleCollapse(): void;
+  handleMenuSelectItem(): void;
+  children: ReactChildren[];
 }
