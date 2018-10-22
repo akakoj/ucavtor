@@ -28,7 +28,9 @@ declare const require: any;
  * Styles
  */
 
-import * as styles from './style.css';
+import styles from './style.css';
+
+console.info(styles);
 
 /*!
  * Expo
