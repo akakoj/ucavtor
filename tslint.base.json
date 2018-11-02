@@ -1,0 +1,21 @@
+{
+  "defaultSeverity": "error",
+  "extends": ["tslint-config-airbnb", "tslint-react"],
+  "jsRules": {},
+  "rules": {
+    "align": false,
+    "import-name": false,
+    "variable-name": false,
+    "max-line-length": [true, 150],
+    "no-boolean-literal-compare": true,
+    "no-constant-condition": true
+  },
+  "rulesDirectory": [
+    "./packages/admin",
+    "./packages/api",
+    "./packages/company",
+    "./packages/dashboard",
+    "./packages/site",
+    "./node_modules/tslint-eslint-rules/dist/rules"
+  ]
+}

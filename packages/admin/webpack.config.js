@@ -61,7 +61,7 @@ module.exports = {
         ]
       },
 
-      // With Css modules
+      // With css modules
       {
         test: /\.css$/,
         include: [resolve(__dirname, 'src')],
@@ -85,7 +85,7 @@ module.exports = {
         ]
       },
 
-      // Without Css modules
+      // Without css modules
       {
         test: /\.css$/,
         exclude: [resolve(__dirname, 'src')],
