@@ -4,18 +4,24 @@
  * @module       :: controller
  * @description  :: keep logic for handle organizations ( create, update and etc )
  *
- *
- * Module dependencies
+ * Vendor
  */
-const mongoose = require('mongoose');
 
-const { send, json } = require('micro');
-const { hashSync, compareSync } = require('bcryptjs');
-const { generate } = require('generate-password');
-const { createTransport } = require('nodemailer');
-const { sign } = require('jsonwebtoken');
+import mongoose from 'mongoose';
 
-const Organization = mongoose.model('Organization');
+import { send, json } from 'micro';
+import { hashSync, compareSync } from 'bcryptjs';
+import { generate } from 'generate-password';
+import { createTransport } from 'nodemailer';
+import { sign } from 'jsonwebtoken';
+
+/**
+ * Model
+ */
+
+import OrganizationSchema from '../models/Organization';
+
+const Organization = mongoose.model('Organization', OrganizationSchema);
 
 const sendPasswordToEmail = async ({ email }, password) => {
   try {
@@ -42,22 +48,20 @@ const sendPasswordToEmail = async ({ email }, password) => {
     };
 
     return transporter.sendMail(mailOptions);
-  } catch(e) {
-    return send(res, 500, e);
-  }
-}
+  } catch (e) { }
+};
 
 /*!
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   const organizations = await Organization.find();
 
   return send(res, 200, organizations);
 };
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   try {
     const organization = await json(req);
     const hashPassword = generate({length: 10, numbers: true });
@@ -65,66 +69,65 @@ exports.create = async (req, res) => {
 
     const organiztaionObj = await Organization.create({ ...organization, password });
 
-    const emailStatus = await sendPasswordToEmail(organiztaionObj, hashPassword);
+    await sendPasswordToEmail(organiztaionObj, hashPassword);
 
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.employers = (req, res) => {
+export const employers = (req, res) => {
   return send(res, 200, { employers: [{
     key: '1',
     fio: 'Тройнов Евгений Александрович',
     position: 'ИТ - Специалист',
     email: 'troinof@yandex.ru',
-    status: 1
+    status: 1,
   }, {
     key: '2',
     fio: 'Кожевников Андрей Алексеевич',
     position: 'Директор',
     email: 'avtorka@list.ru',
-    status: 0
+    status: 0,
   }]});
 }
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   try {
     const organization = await json(req);
 
-    await Organization.update({_id: organization.id }, organization);
+    await Organization.update({ _id: organization.id }, organization);
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = await json(req);
     const user = await Organization.findOne({ email });
 
     if (compareSync(password, user.password)) {
       const token = sign(user.toObject(), '123');
-      return send(res, 200, { token })
+      return send(res, 200, { token });
     }
 
     return send(res, 403);
-  } catch(e) {
-    console.info(e);
-    return send(res, 500, e)
+  } catch (e) {
+    return send(res, 500, e);
   }
 }
 
-exports.destroy = async (req, res) => {
+export const destroy = async (req, res) => {
   try {
     const { id } = await json(req);
 
     await Organization.findByIdAndRemove(id);
-    
+
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };

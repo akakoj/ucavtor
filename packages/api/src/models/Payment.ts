@@ -8,25 +8,18 @@
  * Module dependencies
  */
 
-const mongoose   = require('mongoose');
-const Schema     = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Payment schema
  */
 
-const PaymentSchema = new Schema({
+export default new Schema({
   user: { type: Schema.Types.ObjectId, ref: 'User' },
   course: { type: Schema.Types.ObjectId, ref: 'Course' },
   ip: String,
   state: {
     type: String,
-    default: 'processing'
-  }
+    default: 'processing',
+  },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Payment', PaymentSchema);

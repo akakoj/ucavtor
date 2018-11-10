@@ -4,48 +4,55 @@
  * @module       :: controller
  * @description  :: keep logic for handle lessons ( create, update and etc )
  *
- *
- * Module dependencies
+ * Vendor
  */
-const { send, json } = require('micro');
-const mongoose = require('mongoose');
 
-const Lesson = mongoose.model('Lesson');
-const Course = mongoose.model('Course');
+import { send, json } from 'micro';
+import mongoose from 'mongoose';
+
+/**
+ * Model
+ */
+
+import LessonSchema from '../models/Lesson';
+import CourseSchema from '../models/Course';
+
+const Lesson = mongoose.model('Lesson', LessonSchema);
+const Course = mongoose.model('Course', CourseSchema);
 
 /*!
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   const lessons = await Lesson.find();
 
   return send(res, 200, lessons);
 };
 
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
   try {
     const lesson = await Lesson.findOne({ _id: req.params.id });
-    
+
     return send(res, 200, lesson);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
-}
+};
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   const data = await json(req);
   const lesson = await Lesson.create(data);
   const course = await Course.findOne({ _id: data.course });
 
   course.lessons.push(lesson._id);
-  await course.save();
 
+  await course.save();
 
   return send(res, 200, lesson);
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   const data = await json(req);
   const { _id } = data;
 
@@ -54,9 +61,10 @@ exports.update = async (req, res) => {
   return send(res, 200, lesson);
 };
 
-exports.delete = async (req, res) => {
+export const destroy = async (req, res) => {
   const data = await json(req);
-  const lesson = await Lesson.remove(data);
+
+  await Lesson.remove(data);
 
   return send(res, 200);
 };

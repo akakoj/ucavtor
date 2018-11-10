@@ -4,51 +4,60 @@
  * @module       :: controller
  * @description  :: keep logic for handle payments ( create, update and etc )
  *
- *
- * Module dependencies
+ * Vendor
  */
 
-const mongoose         = require('mongoose');
-const { decode }       = require('jsonwebtoken');
-const { send, json }   = require('micro');
-const { init, status } = require('../utils/payture');
+import { send, json } from 'micro';
+import mongoose from 'mongoose';
 
-const User    = mongoose.model('User');
-const Course  = mongoose.model('Course');
-const Payment = mongoose.model('Payment');
+import { decode } from 'jsonwebtoken';
+import { init, status } from '../utils/payture';
 
+/**
+ * Models
+ */
+
+import UserSchema from '../models/User';
+import CourseSchema from '../models/Course';
+import PaymentSchema from '../models/Payment';
+
+const User    = mongoose.model('User', UserSchema);
+const Course  = mongoose.model('Course', CourseSchema);
+const Payment = mongoose.model('Payment', PaymentSchema);
 
 /*!
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   try {
     const payments = await Payment.find();
 
     return send(res, 200, payments);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
   try {
     const payment = await Payment.find({ user: req.params.id })
       .populate('user')
       .populate('course');
-    
+
     return send(res, 200, payment);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
-}
+};
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   try {
     const { userId, courseId } = await json(req);
+
     const user = await User.findOne({ _id: userId });
-    const course = await Course.findOne({ _id: courseId }); 
+    const course = await Course.findOne({ _id: courseId });
+
     const payment = await Payment.create({
       user: user.id,
       course: course.id,
@@ -61,10 +70,10 @@ exports.create = async (req, res) => {
       Amount: course.price * 100,
       IP: req.headers['x-forwarded-for'],
       SessionType: 'Pay',
-      Url: `http://dashboard.ucavtor.ru/payments?orderid={orderid}&result={success}`,
+      Url: `http://dashboard.ucavtor.ru/payments?orderid=${String(payment._id)}&result=success`,
       Language: 'RU',
       Total: course.price,
-      Product: `"Курс ${course.name}"`,
+      Product: `Курс ${course.name}`,
     }
 
     const initStatus = await init(data);
@@ -73,15 +82,15 @@ exports.create = async (req, res) => {
 
     await payment.save();
 
-    if (initStatus.Success === "True") { return send(res, 200, initStatus); } 
+    if (initStatus.Success === 'True') { return send(res, 200, initStatus); }
 
     return send(res, 500);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   try {
     const data = await json(req);
     const { _id } = data;
@@ -91,30 +100,26 @@ exports.update = async (req, res) => {
     if (payment.state === 'Charged') {
       const user = await User.findOne({ _id: payment.user });
       user.courses.push(payment.course);
-      
+
       await user.save();
     }
 
     return send(res, 200, payment);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.check = async (req, res) => {
+export const check = async (req, res) => {
   try {
     const token = req.headers.authorization.split(' ')[1];
     const { _id }  = decode(token);
 
     const payments = await Payment.find({ user: _id, state: 'processing' });
-    const results = await Promise.all(payments.map(payment => status(String(payment._id)) ));
-  
-    results.forEach(result => {
-      console.info(result);
-    });
+    await Promise.all(payments.map(payment => status(String(payment._id))));
 
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };

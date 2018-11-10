@@ -7,13 +7,14 @@
  *
  * Module dependencies
  */
-const mongoose = require('mongoose');
 
-const { send, json } = require('micro');
-const { hashSync, compareSync } = require('bcryptjs');
-const { generate } = require('generate-password');
-const { createTransport } = require('nodemailer');
-const { sign } = require('jsonwebtoken');
+import mongoose from 'mongoose';
+
+import { send, json } from 'micro';
+import { hashSync, compareSync } from 'bcryptjs';
+import { generate } from 'generate-password';
+import { createTransport } from 'nodemailer';
+import { sign } from 'jsonwebtoken';
 
 const User = mongoose.model('User');
 
@@ -43,8 +44,8 @@ const sendPasswordToEmail = async ({ fio, email }, password) => {
     };
 
     return transporter.sendMail(mailOptions);
-  } catch(e) {
-    return send(res, 500, e);
+  } catch (e) {
+    return null;
   }
 }
 
@@ -52,41 +53,41 @@ const sendPasswordToEmail = async ({ fio, email }, password) => {
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   const users = await User.find();
 
   return send(res, 200, users);
 };
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   try {
     const user = await json(req);
-    const hashPassword = generate({length: 10, numbers: true });
+    const hashPassword = generate({ length: 10, numbers: true });
     const password = hashSync(hashPassword, 8);
 
     const userObj = await User.create({ ...user, password });
 
-    const emailStatus = await sendPasswordToEmail(userObj, hashPassword);
+    await sendPasswordToEmail(userObj, hashPassword);
 
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   try {
     const data = await json(req);
     const { _id } = data;
 
     const user = await User.findOneAndUpdate({ _id }, data, { new: true });
     return send(res, 200, user);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };
 
-exports.login = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = await json(req);
     const user = await User.findOne(
@@ -96,34 +97,37 @@ exports.login = async (req, res) => {
 
     if (compareSync(password, user.password)) {
       const token = sign(user.toObject(), '123');
-      return send(res, 200, { token })
+      return send(res, 200, { token });
     }
 
     return send(res, 403);
-  } catch(e) {
-    return send(res, 500, e)
+  } catch (e) {
+    return send(res, 500, e);
   }
 }
 
-exports.info = async (req, res) => {
+export const info = async (req, res) => {
   try {
     const _id = req.params.id;
-    const user = await User.findOne({ _id }).populate('organization').populate('courses').populate('finishedCourses');
+    const user = await User.findOne({ _id })
+      .populate('organization')
+      .populate('courses')
+      .populate('finishedCourses');
 
     return send(res, 200, user);
-  } catch(e) {
-    return send(res, 500, e)
+  } catch (e) {
+    return send(res, 500, e);
   }
 }
 
-exports.delete = async (req, res) => {
+export const destroy = async (req, res) => {
   try {
     const { id } = await json(req);
 
     await User.findByIdAndRemove(id);
 
     return send(res, 200);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
 };

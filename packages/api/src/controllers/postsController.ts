@@ -4,43 +4,49 @@
  * @module       :: controller
  * @description  :: keep logic for handle posts ( create, update and etc )
  *
- *
- * Module dependencies
+ * Vendor
  */
-const { send, json } = require('micro');
-const mongoose = require('mongoose');
 
-const Post = mongoose.model('Post');
+import { send, json } from 'micro';
+import mongoose from 'mongoose';
+
+/**
+ * Model
+ */
+
+import PostSchema from '../models/Post';
+
+const Post = mongoose.model('Post', PostSchema);
 
 /*!
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   const posts = await Post.find();
 
   return send(res, 200, posts);
 };
 
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
   try {
     const { id } = req.params;
     const post = await Post.findOne({ _id: id });
-    
+
     return send(res, 200, post);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
-}
+};
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   const data = await json(req);
   const post = await Post.create(data);
 
   return send(res, 200, post);
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   const data = await json(req);
   const { _id } = data;
 
@@ -49,11 +55,11 @@ exports.update = async (req, res) => {
   return send(res, 200, post);
 };
 
-exports.delete = async (req, res) => {
+export const destroy = async (req, res) => {
   const data = await json(req);
   const { _id } = data;
 
-  const post = await Post.remove(_id);
+  await Post.remove(_id);
 
   return send(res, 200);
 };

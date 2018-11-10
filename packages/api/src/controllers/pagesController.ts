@@ -4,43 +4,48 @@
  * @module       :: controller
  * @description  :: keep logic for handle pages ( create, update and etc )
  *
- *
- * Module dependencies
+ * Vendor
  */
-const { send, json } = require('micro');
-const mongoose = require('mongoose');
 
-const Page = mongoose.model('Page');
+import { send, json } from 'micro';
+import mongoose from 'mongoose';
+
+/**
+ * Model
+ */
+
+import PageSchema from '../models/Page';
+
+const Page = mongoose.model('Page', PageSchema);
 
 /*!
  * Expos
  */
 
-exports.index = async (req, res) => {
+export const index = async (req, res) => {
   const pages = await Page.find();
 
   return send(res, 200, pages);
 };
 
-exports.show = async (req, res) => {
+export const show = async (req, res) => {
   try {
-    console.info(req.params);
     const page = await Page.findOne({ slug: req.params.slug });
-    
+
     return send(res, 200, page);
-  } catch(e) {
+  } catch (e) {
     return send(res, 500, e);
   }
-}
+};
 
-exports.create = async (req, res) => {
+export const create = async (req, res) => {
   const data = await json(req);
   const page = await Page.create(data);
 
   return send(res, 200, page);
 };
 
-exports.update = async (req, res) => {
+export const update = async (req, res) => {
   const data = await json(req);
   const { _id } = data;
 
@@ -49,11 +54,15 @@ exports.update = async (req, res) => {
   return send(res, 200, page);
 };
 
-exports.delete = async (req, res) => {
-  const data = await json(req);
-  const { _id } = data;
+export const destroy = async (req, res) => {
+  try {
+    const data = await json(req);
+    const { _id } = data;
 
-  const page = await Page.remove(_id);
+    await Page.remove(_id);
 
-  return send(res, 200);
+    return send(res, 200);
+  } catch (e) {
+    return send(res, 500);
+  }
 };

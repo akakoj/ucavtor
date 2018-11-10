@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose   = require('mongoose');
-const Schema     = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Page schema
  */
 
-const PageSchema = new Schema({
+export default new Schema({
   title: String,
   description: String,
   name: String,
@@ -28,12 +27,6 @@ const PageSchema = new Schema({
   },
   status: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Page', PageSchema);

@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Organization schema
  */
 
-const OrganizationSchema = new Schema({
+export default new Schema({
   name: String,
   inn: String,
   kpp: String,
@@ -33,17 +32,11 @@ const OrganizationSchema = new Schema({
     type: String,
     default: '',
     unique: true,
-    required: true
+    required: true,
   },
   password: {
     type: String,
-    default: ''
+    default: '',
   },
   employers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
 });
-
-/**
- * Register
- */
-
-mongoose.model('Organization', OrganizationSchema);

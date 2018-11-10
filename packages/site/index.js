@@ -1,32 +1,47 @@
-const polka = require('polka')
-const next = require('next')
+/**
+ * Vendor
+ */
 
-const port = parseInt(process.env.PORT, 10) || 2001
-const dev = process.env.NODE_ENV !== 'production'
-const app = next({ dev })
-const handle = app.getRequestHandler()
+const micro = require('micro');
+const next = require('next');
 
-app.prepare().then(() => {
-  const server = polka()
+const { router, get } = require('microrouter');
 
-  server.get('/sections/:slug', (req, res) => {
-    const { slug } = req.params;
-    app.render(req, res, '/sections', { slug })
-  })
+/**
+ * Settings
+ */
 
-  server.get('/page/:slug', (req, res) => {
-    const { slug } = req.params;
-    app.render(req, res, '/page', { slug })
-  })
+const port = parseInt(process.env.PORT, 10) || 2001;
+const dev = process.env.NODE_ENV !== 'production';
+const app = next({ dev });
+const handle = app.getRequestHandler();
 
-  server.get('/courses/:slug', (req, res) => {
-    const { slug } = req.params;
-    app.render(req, res, '/courses', { slug })
-  })
+/**
+ * Server
+ */
 
-  server.get('*', (req, res) => handle(req, res))
+app
+  .prepare()
+  .then(() => {
 
-  server
-    .listen(port)
-    .then(() => console.log(`> Ready on http://localhost:${port}`))
+  micro(
+    router(
+      get('/sections/:slug', (req, res) => {
+        const { slug } = req.params;
+        app.render(req, res, '/sections', { slug });
+      }),
+
+      get('/page/:slug', (req, res) => {
+        const { slug } = req.params;
+        app.render(req, res, '/page', { slug });
+      }),
+
+      get('/courses/:slug', (req, res) => {
+        const { slug } = req.params;
+        app.render(req, res, '/courses', { slug });
+      }),
+
+      get('*', (req, res) => handle(req, res)),
+    ),
+  ).listen(port);
 })

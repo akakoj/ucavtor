@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Course schema
  */
 
-const CourseSchema = new Schema({
+export default new Schema({
   title: String,
   description: String,
   name: String,
@@ -42,11 +41,5 @@ const CourseSchema = new Schema({
   status: {
     type: Number,
     default: 0,
-  }
+  },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Course', CourseSchema);

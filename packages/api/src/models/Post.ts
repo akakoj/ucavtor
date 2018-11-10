@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose   = require('mongoose');
-const Schema     = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Post schema
  */
 
-const PostSchema = new Schema({
+export default new Schema({
   title: String,
   description: String,
   name: String,
@@ -31,12 +30,6 @@ const PostSchema = new Schema({
   },
   status: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Post', PostSchema);

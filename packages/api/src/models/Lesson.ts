@@ -8,20 +8,13 @@
  * Module dependencies
  */
 
-const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Lesson schema
  */
 
-const LessonSchema = new Schema({
+export default new Schema({
   name: String,
   content: String,
 });
-
-/**
- * Register
- */
-
-mongoose.model('Lesson', LessonSchema);

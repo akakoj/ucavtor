@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose   = require('mongoose');
-const Schema     = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Settings schema
  */
 
-const SettingsSchema = new Schema({
+export default new Schema({
   name: String,
   value: String,
 
@@ -25,9 +24,3 @@ const SettingsSchema = new Schema({
     required: true,
   },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Settings', SettingsSchema);

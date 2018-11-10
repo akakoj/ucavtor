@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * User schema
  */
 
-const UserSchema = new Schema({
+export default new Schema({
   fio: String,
   telephone: String,
   password: String,
@@ -26,23 +25,17 @@ const UserSchema = new Schema({
   payments: { type: Schema.Types.ObjectId, ref: 'Payment' },
   tests: {
     type: Array,
-    default: []
+    default: [],
   },
   email: {
     type: String,
     unique: true,
-    required: true
+    required: true,
   },
   position: String,
 
   level: {
     type: Number,
-    default: 0
-  }
+    default: 0,
+  },
 });
-
-/**
- * Register
- */
-
-mongoose.model('User', UserSchema);

@@ -1,7 +1,7 @@
 /**
  * Vendor
  */
-import * as React from 'react';
+import React from 'react';
 import Link from 'next/link';
 
 import { Row, Col } from 'antd';
@@ -16,15 +16,15 @@ const Course = ({ icon, name, content, slug } : ICourse) => (
       <Link as={`/courses/${slug}`} href={`/courses?slug=${slug}`}>
         <a className="course__link">
           <Row>
-            <Col span={6} className="left-column">
+            <Col span={6}>
               <figure className="course__img-container">
                 <img src={icon} alt={name} className="course__img" width="100" height="100" />
               </figure>
             </Col>
 
-            <Col span={18} className="right-column">
+            <Col span={18}>
               <header className="course__header">
-                <h3 className="course__title">
+                <h3 className="course__title" title={name}>
                   {`${name.slice(0, 40)}...`}
                 </h3>
               </header>

@@ -8,14 +8,13 @@
  * Module dependencies
  */
 
-const mongoose = require('mongoose');
-const Schema   = mongoose.Schema;
+import { Schema } from 'mongoose';
 
 /**
  * Section schema
  */
 
-const SectionSchema = new Schema({
+export default new Schema({
   title: String,
   description: String,
   name: String,
@@ -24,7 +23,7 @@ const SectionSchema = new Schema({
   courses: [{ type: Schema.Types.ObjectId, ref: 'Course' }],
   status: {
     type: Number,
-    default: 0
+    default: 0,
   },
   slug: {
     type: String,
@@ -32,9 +31,3 @@ const SectionSchema = new Schema({
     required: true,
   },
 });
-
-/**
- * Register
- */
-
-mongoose.model('Section', SectionSchema);
