@@ -10,15 +10,25 @@
 
 import mongoose from 'mongoose';
 
+import { sign } from 'jsonwebtoken';
 import { send, json } from 'micro';
-import { hashSync, compareSync } from 'bcryptjs';
 import { generate } from 'generate-password';
 import { createTransport } from 'nodemailer';
-import { sign } from 'jsonwebtoken';
+import { hashSync, compareSync } from 'bcryptjs';
+
+import { ServerResponse, ServerRequest } from 'microrouter';
+
+import { IUser, IUserModel } from '../global';
 
 const User = mongoose.model('User');
 
-const sendPasswordToEmail = async ({ fio, email }, password) => {
+/*!
+ * Helpers
+ */
+
+const sendPasswordToEmail = async (
+  { fio, email }: { fio: string; email: string }, password: string
+) => {
   try {
     const transporter = createTransport({
       service: 'Yandex',
@@ -44,53 +54,52 @@ const sendPasswordToEmail = async ({ fio, email }, password) => {
     };
 
     return transporter.sendMail(mailOptions);
-  } catch (e) {
-    return null;
-  }
+  } catch (e) {}
 }
 
 /*!
  * Expos
  */
 
-export const index = async (req, res) => {
+export const index = async (_req: ServerRequest, res: ServerResponse) => {
   const users = await User.find();
 
   return send(res, 200, users);
 };
 
-export const create = async (req, res) => {
+export const create = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const user = await json(req);
+    const user = <IUser> await json(req);
     const hashPassword = generate({ length: 10, numbers: true });
     const password = hashSync(hashPassword, 8);
 
-    const userObj = await User.create({ ...user, password });
+    const userModel = <IUserModel> await User.create({ ...user, password });
 
-    await sendPasswordToEmail(userObj, hashPassword);
+    await sendPasswordToEmail(userModel, hashPassword);
 
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const update = async (req, res) => {
+export const update = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const data = await json(req);
-    const { _id } = data;
+    const data = <IUserModel> await json(req);
+    const { id } = data;
 
-    const user = await User.findOneAndUpdate({ _id }, data, { new: true });
+    const user = await User.findOneAndUpdate({ _id: id }, data, { new: true });
+
     return send(res, 200, user);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const { email, password } = await json(req);
-    const user = await User.findOne(
+    const { email, password } = <IUser> await json(req);
+    const user = <IUserModel> await User.findOne(
       { email },
       { _id: 1, fio: 1, position: 1, email: 1, password: 1 }
     );
@@ -102,32 +111,32 @@ export const login = async (req, res) => {
 
     return send(res, 403);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 }
 
-export const info = async (req, res) => {
+export const info = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const _id = req.params.id;
-    const user = await User.findOne({ _id })
+    const { id } = <IUserModel> await json(req);
+    const user = await User.findOne({ _id: id })
       .populate('organization')
       .populate('courses')
       .populate('finishedCourses');
 
     return send(res, 200, user);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 }
 
-export const destroy = async (req, res) => {
+export const destroy = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const { id } = await json(req);
+    const { id } = <IUserModel> await json(req);
 
     await User.findByIdAndRemove(id);
 
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };

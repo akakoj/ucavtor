@@ -1,0 +1,10 @@
+export { default as OrganizationSchema } from './organization';
+export { default as CourseSchema } from './course';
+export { default as LessonSchema } from './lesson';
+export { default as SectionSchema } from './section';
+export { default as PaymentSchema } from './payment';
+export { default as PageSchema } from './page';
+export { default as PostSchema } from './post';
+export { default as QuestionSchema } from './question';
+export { default as SettingsSchema } from './settings';
+export { default as UserSchema } from './user';

@@ -1,15 +1,16 @@
 /**
- * Dependencies
+ * Vendor
  */
 
-const fs       = require('fs');
-const path     = require('path');
-const cors     = require('micro-cors')();
-const compose  = require('micro-compose');
-const mongoose = require('mongoose');
+import fs from 'fs';
+import path from 'path';
+import cors from 'micro-cors';
+import compose from 'micro-compose';
+import mongoose from 'mongoose';
 
-const { send } = require('micro');
-const { router, get, post } = require('microrouter');
+import { send } from 'micro';
+import { router, get, post } from 'microrouter';
+import { ServerRequest, ServerResponse } from 'microrouter';
 
 /**
  * DataBase
@@ -32,18 +33,21 @@ fs.readdirSync(path.join(__dirname, '/models')).forEach((file) => {
  * Routes
  */
 
-const lessonsController       = require('./controllers/lessonsController');
-const questionsController     = require('./controllers/questionsController');
-const pagesController         = require('./controllers/pagesController');
-const coursesController       = require('./controllers/coursesController');
-const paymentsController      = require('./controllers/paymentsController');
-const sectionsController      = require('./controllers/sectionsController');
-const usersController         = require('./controllers/usersController');
-const organizationsController = require('./controllers/organizationsController');
-const postsController         = require('./controllers/postsController');
-const settingsController      = require('./controllers/settingsController');
+import {
+  lessonsController,
+  questionsController,
+  pagesController,
+  coursesController,
+  sectionsController,
+  usersController,
+  organizationsController,
+  postsController,
+  settingsController,
+} from './controllers';
 
-const notfound = (req, res) => send(res, 404, 'You shall not passs :)');
+const notfound = (
+  _req: ServerRequest, res: ServerResponse
+) => send(res, 404, 'You shall not passs :)');
 
 /**
  * Expo
@@ -57,41 +61,41 @@ export default compose(
   get('/pages/:slug', pagesController.show),
   post('/pages/create', pagesController.create),
   post('/pages/update', pagesController.update),
-  post('/pages/delete', pagesController.delete),
+  post('/pages/delete', pagesController.destroy),
 
   /** COURSES **/
   get('/courses', coursesController.index),
   get('/courses/:id', coursesController.show),
   post('/courses/create', coursesController.create),
   post('/courses/update', coursesController.update),
-  post('/courses/delete', coursesController.delete),
+  post('/courses/delete', coursesController.destroy),
 
   /** LESSONS **/
   get('/lessons', lessonsController.index),
   get('/lessons/:id', lessonsController.show),
   post('/lessons/create', lessonsController.create),
   post('/lessons/update', lessonsController.update),
-  post('/lessons/delete', lessonsController.delete),
+  post('/lessons/delete', lessonsController.destroy),
 
   /** QUESTIONS **/
   get('/questions/:id', questionsController.index),
   post('/questions/create', questionsController.create),
   post('/questions/update', questionsController.update),
-  post('/questions/delete', questionsController.delete),
+  post('/questions/delete', questionsController.destroy),
 
   /** SECTIONS **/
   get('/sections', sectionsController.index),
   get('/sections/:slug', sectionsController.show),
   post('/sections/create', sectionsController.create),
   post('/sections/update', sectionsController.update),
-  post('/sections/delete', sectionsController.delete),
+  post('/sections/delete', sectionsController.destroy),
 
   /** USERS **/
   get('/users', usersController.index),
   get('/users/info/:id', usersController.info),
   post('/users/create', usersController.create),
   post('/users/update', usersController.update),
-  post('/users/delete', usersController.delete),
+  post('/users/delete', usersController.destroy),
   post('/users/login', usersController.login),
 
   /** POSTS **/
@@ -99,21 +103,13 @@ export default compose(
   get('/posts/:id', postsController.show),
   post('/posts/create', postsController.create),
   post('/posts/update', postsController.update),
-  post('/posts/delete', postsController.delete),
+  post('/posts/delete', postsController.destroy),
 
   /** SETTINGS **/
   get('/settings', settingsController.index),
   post('/settings/create', settingsController.create),
   post('/settings/update', settingsController.update),
-  post('/settings/delete', settingsController.delete),
-
-  /** PAYMENTS **/
-  get('/payments', paymentsController.index),
-  get('/payments/check', paymentsController.check),
-  post('/payments/create', paymentsController.create),
-  post('/payments/update', paymentsController.update),
-
-  get('/payments/:id', paymentsController.show),
+  post('/settings/delete', settingsController.destroy),
 
   /** ORGANIZATIONS **/
   get('/organizations', organizationsController.index),

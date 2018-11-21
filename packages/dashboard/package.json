@@ -6,16 +6,16 @@
     "build": "API_URL=http://api.ucavtor.ru parcel build ./src/index.html --public-url ./"
   },
   "dependencies": {
-    "antd": "^3.10.3",
+    "antd": "^3.10.7",
     "axios": "^0.18.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.11",
     "moment": "^2.22.2",
-    "react": "^16.6.0",
-    "react-dom": "^16.6.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
     "react-helmet": "^5.2.0",
     "react-icons": "^3.2.2",
-    "react-redux": "^5.1.0",
+    "react-redux": "^5.1.1",
     "react-router-dom": "^4.3.1",
     "react-router-redux": "^4.0.8",
     "react-yandex-metrika": "^2.4.2",
@@ -24,11 +24,11 @@
     "redux-act": "^1.7.4",
     "redux-devtools-extension": "^2.13.5",
     "redux-thunk": "^2.3.0",
-    "styled-components": "^4.0.3"
+    "styled-components": "^4.1.1"
   },
   "devDependencies": {
-    "@babel/core": "^7.1.2",
-    "@babel/preset-env": "^7.1.0",
+    "@babel/core": "^7.1.5",
+    "@babel/preset-env": "^7.1.5",
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-typescript": "^7.1.0",
     "babel-loader": "^8.0.4",

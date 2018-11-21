@@ -7,19 +7,30 @@
  * Vendor
  */
 
-import { send, json } from 'micro';
 import mongoose from 'mongoose';
-
+import { send, json } from 'micro';
 import { decode } from 'jsonwebtoken';
+import { ServerRequest, ServerResponse } from 'microrouter';
+
 import { init, status } from '../utils/payture';
 
 /**
  * Models
  */
 
-import UserSchema from '../models/User';
-import CourseSchema from '../models/Course';
-import PaymentSchema from '../models/Payment';
+import {
+  UserSchema,
+  CourseSchema,
+  PaymentSchema,
+} from '../models';
+
+import {
+  IUserModel,
+  ICourseModel,
+  IPaymentModel,
+  IPaymentStatus,
+  IPaymentParams,
+} from '../global';
 
 const User    = mongoose.model('User', UserSchema);
 const Course  = mongoose.model('Course', CourseSchema);
@@ -29,17 +40,17 @@ const Payment = mongoose.model('Payment', PaymentSchema);
  * Expos
  */
 
-export const index = async (req, res) => {
+export const index = async (_req: ServerRequest, res: ServerResponse) => {
   try {
     const payments = await Payment.find();
 
     return send(res, 200, payments);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const show = async (req, res) => {
+export const show = async (req: ServerRequest, res: ServerResponse) => {
   try {
     const payment = await Payment.find({ user: req.params.id })
       .populate('user')
@@ -47,18 +58,18 @@ export const show = async (req, res) => {
 
     return send(res, 200, payment);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const create = async (req, res) => {
+export const create = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const { userId, courseId } = await json(req);
+    const { userId, courseId } = <IPaymentParams> await json(req);
 
-    const user = await User.findOne({ _id: userId });
-    const course = await Course.findOne({ _id: courseId });
+    const user = <IUserModel> await User.findOne({ _id: userId });
+    const course = <ICourseModel> await Course.findOne({ _id: courseId });
 
-    const payment = await Payment.create({
+    const payment = <IPaymentModel> await Payment.create({
       user: user.id,
       course: course.id,
       ip: String(req.connection.remoteAddress),
@@ -76,8 +87,8 @@ export const create = async (req, res) => {
       Product: `Курс ${course.name}`,
     }
 
-    const initStatus = await init(data);
-    payment.ip = req.headers['x-forwarded-for'];
+    const initStatus = <IPaymentStatus> await init(data);
+    payment.ip = <string> req.headers['x-forwarded-for'];
     payment.sessionId = initStatus.SessionId;
 
     await payment.save();
@@ -86,19 +97,21 @@ export const create = async (req, res) => {
 
     return send(res, 500);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const update = async (req, res) => {
+export const update = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const data = await json(req);
-    const { _id } = data;
+    const data = <IPaymentModel> await json(req);
+    const { id } = data;
 
-    const payment = await Payment.findOneAndUpdate({ _id }, data, { new: true });
+    const payment = <IPaymentModel>await Payment.findOneAndUpdate(
+      { _id: id }, data, { new: true }
+    );
 
     if (payment.state === 'Charged') {
-      const user = await User.findOne({ _id: payment.user });
+      const user = <IUserModel> await User.findOne({ _id: payment.user });
       user.courses.push(payment.course);
 
       await user.save();
@@ -106,20 +119,21 @@ export const update = async (req, res) => {
 
     return send(res, 200, payment);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const check = async (req, res) => {
+export const check = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const token = req.headers.authorization.split(' ')[1];
-    const { _id }  = decode(token);
+    // @ts-ignore
+    const token = req.headers['authorization'].split(' ')[1];
+    const { id } = <IPaymentModel> decode(token);
 
-    const payments = await Payment.find({ user: _id, state: 'processing' });
+    const payments = await Payment.find({ user: id, state: 'processing' });
     await Promise.all(payments.map(payment => status(String(payment._id))));
 
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };

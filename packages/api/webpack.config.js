@@ -2,6 +2,7 @@
  * Plugins
  */
 
+const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 /**
@@ -22,14 +23,16 @@ module.exports = {
     filename: devMode ? 'app.bundle.js' : 'app.[hash].js'
   },
 
+  externals: [nodeExternals()],
+
   resolve: {
-    extensions: ['.ts', '.tsx', '.js', '.jsx']
+    extensions: ['.ts', '.js']
   },
 
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.ts$/,
         exclude: /node_modules/,
         loader: 'babel-loader'
       }
@@ -43,26 +46,5 @@ module.exports = {
         parallel: true,
       }),
     ],
-    splitChunks: {
-      chunks: 'async',
-      minSize: 30000,
-      maxSize: 0,
-      minChunks: 1,
-      maxAsyncRequests: 5,
-      maxInitialRequests: 3,
-      automaticNameDelimiter: '~',
-      name: true,
-      cacheGroups: {
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          priority: -10
-        },
-        default: {
-          minChunks: 2,
-          priority: -20,
-          reuseExistingChunk: true
-        }
-      }
-    }
   },
 };

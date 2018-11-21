@@ -9,21 +9,29 @@
 
 import mongoose from 'mongoose';
 
-import { send, json } from 'micro';
-import { hashSync, compareSync } from 'bcryptjs';
-import { generate } from 'generate-password';
-import { createTransport } from 'nodemailer';
 import { sign } from 'jsonwebtoken';
+import { generate } from 'generate-password';
+import { send, json } from 'micro';
+import { createTransport } from 'nodemailer';
+import { hashSync, compareSync } from 'bcryptjs';
+import { ServerRequest, ServerResponse } from 'microrouter';
 
 /**
  * Model
  */
 
-import OrganizationSchema from '../models/Organization';
+import {
+  IOrganization,
+  IRequestParams,
+  IOrganizationModel,
+} from '../global';
+import { OrganizationSchema } from '../models';
 
 const Organization = mongoose.model('Organization', OrganizationSchema);
 
-const sendPasswordToEmail = async ({ email }, password) => {
+const sendPasswordToEmail = async (
+  { email }: { email: string }, password: string
+) => {
   try {
     const transporter = createTransport({
       service: 'Yandex',
@@ -55,29 +63,30 @@ const sendPasswordToEmail = async ({ email }, password) => {
  * Expos
  */
 
-export const index = async (req, res) => {
+export const index = async (_req: ServerRequest, res: ServerResponse) => {
   const organizations = await Organization.find();
 
   return send(res, 200, organizations);
 };
 
-export const create = async (req, res) => {
+export const create = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const organization = await json(req);
+    const organization = <IOrganization> await json(req);
     const hashPassword = generate({length: 10, numbers: true });
     const password = hashSync(hashPassword, 8);
 
-    const organiztaionObj = await Organization.create({ ...organization, password });
+    const organiztaionObj = <IOrganizationModel> await Organization
+      .create({ ...organization, password });
 
     await sendPasswordToEmail(organiztaionObj, hashPassword);
 
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const employers = (req, res) => {
+export const employers = (_req: ServerRequest, res: ServerResponse) => {
   return send(res, 200, { employers: [{
     key: '1',
     fio: 'Тройнов Евгений Александрович',
@@ -93,41 +102,42 @@ export const employers = (req, res) => {
   }]});
 }
 
-export const update = async (req, res) => {
+export const update = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const organization = await json(req);
+    const organization = <IOrganizationModel> await json(req);
 
     await Organization.update({ _id: organization.id }, organization);
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const { email, password } = await json(req);
-    const user = await Organization.findOne({ email });
+    const { email, password } = <IOrganization> await json(req);
+    const organization = <IOrganizationModel> await Organization.findOne({ email });
 
-    if (compareSync(password, user.password)) {
-      const token = sign(user.toObject(), '123');
+    if (compareSync(password, organization.password)) {
+      const token = sign(organization.toObject(), '123');
+
       return send(res, 200, { token });
     }
 
     return send(res, 403);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 }
 
-export const destroy = async (req, res) => {
+export const destroy = async (req: ServerRequest, res: ServerResponse) => {
   try {
-    const { id } = await json(req);
+    const { id } = <IRequestParams> await json(req);
 
     await Organization.findByIdAndRemove(id);
 
     return send(res, 200);
   } catch (e) {
-    return send(res, 500, e);
+    return send(res, 500);
   }
 };

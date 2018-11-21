@@ -1,0 +1,10 @@
+export { default as lessonsController } from './lessons';
+export { default as questionsController } from './questions';
+export { default as pagesController } from './pages';
+export { default as coursesController } from './courses';
+export { default as paymentsController } from './payments';
+export { default as sectionsController } from './sections';
+export { default as usersController } from './users';
+export { default as organizationsController } from './organizations';
+export { default as postsController } from './posts';
+export { default as settingsController } from './settings';
